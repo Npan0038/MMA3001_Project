@@ -1,3 +1,10 @@
+"""Mesh convergence study for the FTCS solver.
+
+Runs the no-heating cooling problem on five meshes and measures the maximum error against
+the exact solution in analytical.py. Halving the mesh spacing should cut the error by 4
+(second-order convergence).
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 from analytical import analytical_solution
