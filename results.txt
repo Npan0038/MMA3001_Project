@@ -1,0 +1,13 @@
+train runs: 240, test runs: 60
+
+Accuracy on the test set (temperatures in deg C):
+model                                RMSE      MAE  max err       R2
+Linear regression (baseline)        1.051    0.637    4.792   0.9877
+Decision tree                       1.710    1.224    6.468   0.9675
+Neural network                      0.516    0.367    2.241   0.9970
+
+Solver time per run (timed here): 121.20 ms
+Surrogate time per single prediction:
+  Linear regression (baseline)   0.096 ms   (1,261x faster than the solver)
+  Decision tree                  0.157 ms   (771x faster than the solver)
+  Neural network                 0.705 ms   (172x faster than the solver)
