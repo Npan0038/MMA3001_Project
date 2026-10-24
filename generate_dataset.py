@@ -1,3 +1,10 @@
+"""Generate the training dataset by running the FTCS solver on 300 random charging scenarios.
+
+Each run charges one 18650 cell for one hour. Inputs: charging current, convection
+coefficient and ambient temperature. Output: cell centre and surface temperature at the
+end, plus how long the solver took. Results are saved to dataset.csv.
+"""
+
 import time
 import numpy as np
 
