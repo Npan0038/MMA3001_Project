@@ -1,6 +1,6 @@
 """Exact (analytical) solution for a cooling solid cylinder with convection at the surface.
 
-This is the validation reference for the FTCS solver. With no heat generation, a solid
+This is the reference solution for validating the FTCS solver. With no heat generation, a solid
 cylinder that starts at a uniform temperature and sits in air at a different temperature
 has a known series solution built from Bessel functions. The functions here compute it
 using only basic maths (no scipy needed):
@@ -67,10 +67,10 @@ def find_eigenvalues(Bi, n_terms):
     left = 1e-9
     while len(roots) < n_terms:
         right = left + step
-        # a sign change means a root is hiding between left and right
+    
         if f(left, Bi) * f(right, Bi) < 0:
             lo, hi = left, right
-            for _ in range(60):          # bisection: keep halving the gap
+            for _ in range(60):          
                 mid = (lo + hi) / 2
                 if f(lo, Bi) * f(mid, Bi) <= 0:
                     hi = mid
@@ -98,14 +98,14 @@ def analytical_solution(r, t, R, alpha, Bi, T_i, T_inf, n_terms=8):
         Temperature in C.
     """
     lams = find_eigenvalues(Bi, n_terms)
-    Fo = alpha * t / R**2                      # dimensionless time
+    Fo = alpha * t / R**2                     
     theta = 0.0
     for lam in lams:
         J0 = bessel_j0(lam)
         J1 = bessel_j1(lam)
-        C = 2 * J1 / (lam * (J0**2 + J1**2))   # weight of this term
+        C = 2 * J1 / (lam * (J0**2 + J1**2))   
         theta += C * math.exp(-lam**2 * Fo) * bessel_j0(lam * r / R)
-    return T_inf + (T_i - T_inf) * theta       # convert back to real temperature
+    return T_inf + (T_i - T_inf) * theta       
 
 
 if __name__ == "__main__":
