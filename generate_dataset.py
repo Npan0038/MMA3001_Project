@@ -1,22 +1,22 @@
 """Generate the training dataset by running the FTCS solver on 300 random charging scenarios.
 
 Each run charges one 18650 cell for one hour. Inputs: charging current, convection
-coefficient and ambient temperature. Output: cell centre and surface temperature at the
+coefficient, and ambient temperature. Output: cell center and surface temperature at the
 end, plus how long the solver took. Results are saved to dataset.csv.
 """
 
 import time
 import numpy as np
 
-# ---- fixed cell properties (sources are listed in docs/problem_definition.md) ----
-R = 9e-3                         # m, 18650 radius
-H_CELL = 65e-3                   # m, cell height
-V = np.pi * R**2 * H_CELL        # m^3
+
+R = 9e-3                         
+H_CELL = 65e-3                  
+V = np.pi * R**2 * H_CELL        
 rho, cp, k = 2720.0, 900.0, 0.22
 alpha = k / (rho * cp)
-R_INT = 0.01923                  # ohm, Samsung INR18650-25R datasheet, DC typical
-CHARGE_TIME = 3600.0             # s, one hour charge
-N_NODES = 21                     # coarse mesh is fine: convergence study shows error ~0.008 C
+R_INT = 0.01923                  
+CHARGE_TIME = 3600.0            
+N_NODES = 21                     
 
 def solve(current, h, T_amb):
     """FTCS solve of the cell for CHARGE_TIME. Returns centre temp, surface temp (C)."""
@@ -24,7 +24,7 @@ def solve(current, h, T_amb):
     dr = r[1] - r[0]
     dt = 0.9 * 0.25 * dr**2 / alpha
     n_steps = int(np.ceil(CHARGE_TIME / dt))
-    q = current**2 * R_INT / V / (rho * cp)      # heating rate, K/s
+    q = current**2 * R_INT / V / (rho * cp)      
     T = np.full(N_NODES, T_amb)
     for n in range(n_steps):
         T_new = np.empty(N_NODES)
@@ -40,11 +40,11 @@ def solve(current, h, T_amb):
     return T[0], T[-1]
 
 if __name__ == "__main__":
-    rng = np.random.default_rng(42)              # fixed seed so results are repeatable
+    rng = np.random.default_rng(42)             
     n_samples = 300
-    currents = rng.uniform(1.0, 4.0, n_samples)  # A, up to the datasheet max charge current
-    hs = rng.uniform(5.0, 28.4, n_samples)       # W/m2K, 28.4 = sourced natural convection; lower end is an ASSUMED poorly cooled pack
-    T_ambs = rng.uniform(15.0, 45.0, n_samples)  # C
+    currents = rng.uniform(1.0, 4.0, n_samples)  
+    hs = rng.uniform(5.0, 28.4, n_samples)       
+    T_ambs = rng.uniform(15.0, 45.0, n_samples) 
 
     rows = []
     for i in range(n_samples):
