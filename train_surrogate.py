@@ -9,16 +9,16 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
-# ---- 1. load the solver-generated dataset ----
-data = np.genfromtxt("dataset.csv", delimiter=",", names=True)
-X = np.column_stack([data["current_A"], data["h_W_m2K"], data["T_amb_C"]])   # inputs
-y = data["T_centre_final_C"]                                                 # what we predict
 
-# ---- 2. split: the models never see the test set while training ----
+data = np.genfromtxt("dataset.csv", delimiter=",", names=True)
+X = np.column_stack([data["current_A"], data["h_W_m2K"], data["T_amb_C"]])   
+y = data["T_centre_final_C"]                                                 
+
+
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 print(f"train runs: {len(X_train)}, test runs: {len(X_test)}")
 
-# ---- 3. the models ----
+
 models = {
     "Linear regression (baseline)": LinearRegression(),
     "Decision tree": DecisionTreeRegressor(max_depth=8, random_state=42),
@@ -28,7 +28,7 @@ models = {
     ),
 }
 
-# ---- 4. train each model and score it on the unseen test set ----
+
 results = {}
 for name, model in models.items():
     model.fit(X_train, y_train)
@@ -47,7 +47,7 @@ print(f"{'model':32s} {'RMSE':>8s} {'MAE':>8s} {'max err':>8s} {'R2':>8s}")
 for name, r in results.items():
     print(f"{name:32s} {r['RMSE']:8.3f} {r['MAE']:8.3f} {r['max_err']:8.3f} {r['R2']:8.4f}")
 
-# ---- 5. speed: solver vs surrogate, timed in the SAME place for a fair comparison ----
+
 try:
     from generate_dataset import solve
     t0 = time.perf_counter()
@@ -69,7 +69,7 @@ for name, model in models.items():
     results[name]["time"] = t
     print(f"  {name:30s} {t * 1000:.3f} ms   ({solver_time / t:,.0f}x faster than the solver)")
 
-# ---- 6. parity plots: a perfect model puts every point on the diagonal ----
+
 fig, axes = plt.subplots(1, 3, figsize=(14, 4.2))
 lo, hi = y_test.min() - 1, y_test.max() + 1
 for ax, (name, r) in zip(axes, results.items()):
