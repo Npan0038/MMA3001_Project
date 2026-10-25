@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from analytical import analytical_solution
 
-# ---- same cooling problem as validate.py (no heat generation) ----
+
 R = 9e-3
 rho, cp, k = 2720.0, 900.0, 0.22
 alpha = k / (rho * cp)
@@ -22,7 +22,7 @@ def run_ftcs(n_nodes):
     """Run FTCS for 600 s on a mesh with n_nodes points. Return dr and the max error vs exact."""
     r = np.linspace(0, R, n_nodes)
     dr = r[1] - r[0]
-    dt = 0.9 * 0.25 * dr**2 / alpha          # stable time step for this mesh
+    dt = 0.9 * 0.25 * dr**2 / alpha          
     n_steps = int(np.ceil(600.0 / dt))
     T = np.full(n_nodes, T_init)
     for n in range(n_steps):
